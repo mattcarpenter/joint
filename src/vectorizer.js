@@ -127,7 +127,7 @@ V = Vectorizer = (function() {
     };
 
 V.prototype.transform = function(matrix, opt) {
-
+        console.log('hello world!');
         var node = this.node;
         if (V.isUndefined(matrix)) {
             return (node.parentNode)
