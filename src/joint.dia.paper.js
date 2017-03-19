@@ -595,7 +595,8 @@ joint.dia.Paper = joint.mvc.View.extend({
                 // The cell has to be part of the graph collection.
                 // There is a chance in asynchronous rendering
                 // that a cell was removed before it's rendered to the paper.
-                if (cell.collection === collection) this.renderView(cell);
+                //if (cell.collection === collection)
+                this.renderView(cell);
 
             }, this);
 
