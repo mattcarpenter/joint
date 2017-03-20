@@ -1,4 +1,4 @@
-/*! JointJS v1.0.3 (2016-11-22) - JavaScript diagramming library
+/*! JointJS v1.0.3 (2017-03-19) - JavaScript diagramming library
 
 
 This Source Code Form is subject to the terms of the Mozilla Public
@@ -1285,28 +1285,35 @@ V = Vectorizer = (function() {
         return toElem.getScreenCTM().inverse().multiply(this.node.getScreenCTM());
     };
 
-    /**
-     * @param {SVGMatrix} matrix
-     * @param {Object=} opt
-     * @returns {Vectorizer|SVGMatrix} Setter / Getter
-     */
-    V.prototype.transform = function(matrix, opt) {
+   V.matrixToTransformString = function(matrix) {
+        matrix || (matrix = true);
+        return 'matrix(' + [
+            matrix.a || 1,
+            matrix.b || 0,
+            matrix.c || 0,
+            matrix.d || 1,
+            matrix.e || 0,
+            matrix.f || 0
+        ] + ')';
+    };
 
+V.prototype.transform = function(matrix, opt) {
+
+        var node = this.node;
         if (V.isUndefined(matrix)) {
-            return (this.node.parentNode)
-                ? this.getTransformToElement(this.node.parentNode)
-                : this.node.getScreenCTM();
+            return (node.parentNode)
+                ? this.getTransformToElement(node.parentNode)
+                : node.getScreenCTM();
         }
 
-        var transformList = this.node.transform.baseVal;
         if (opt && opt.absolute) {
-            transformList.clear();
+            return this.attr('transform', V.matrixToTransformString(matrix));
         }
 
         var svgTransform = V.createSVGTransform(matrix);
-        transformList.appendItem(svgTransform);
+        node.transform.baseVal.appendItem(svgTransform);
         return this;
-    };
+};
 
     V.prototype.translate = function(tx, ty, opt) {
 
@@ -9923,7 +9930,8 @@ joint.dia.Paper = joint.mvc.View.extend({
                 // The cell has to be part of the graph collection.
                 // There is a chance in asynchronous rendering
                 // that a cell was removed before it's rendered to the paper.
-                if (cell.collection === collection) this.renderView(cell);
+                //if (cell.collection === collection)
+                this.renderView(cell);
 
             }, this);
 
